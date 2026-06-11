@@ -1,7 +1,7 @@
 {
   "name": "tryp-logger",
   "version": "0.1.0",
-  "description": "",
+  "description": "A professional logging library for Trypillia.",
   "author": "Serhii Cherneha",
   "entry": "main.try",
   "dependencies": {}
