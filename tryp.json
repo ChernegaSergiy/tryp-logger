@@ -1,1 +1,8 @@
-{"name":"tryp-logger","version":"0.1.0","description":"","author":"Serhii Cherneha","entry":"main.try","dependencies":{}}
+{
+  "name": "tryp-logger",
+  "version": "0.1.0",
+  "description": "",
+  "author": "Serhii Cherneha",
+  "entry": "main.try",
+  "dependencies": {}
+}
