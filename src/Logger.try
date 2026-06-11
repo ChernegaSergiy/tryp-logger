@@ -1,51 +1,81 @@
 // tryp-logger/src/Logger.try
 
-let __tryp_logger_file = false;
+let LogLevel = {
+    "DEBUG": 0,
+    "INFO": 1,
+    "WARN": 2,
+    "ERROR": 3
+};
 
 class Logger {
-    // Set a file path to log messages to a file
-    static fn setFile(filePath) {
-        let f = File.open(filePath, "a");
+    fn init(name) {
+        this.name = name;
+        this.minLevel = LogLevel["DEBUG"];
+        this.fileHandle = false;
+        this.jsonMode = false;
+    }
+
+    fn setLevel(level) {
+        this.minLevel = level;
+    }
+
+    fn setFile(path) {
+        let f = File.open(path, "a");
         if (f.isOk) {
-            __tryp_logger_file = f.value;
+            this.fileHandle = f.value;
         } else {
             Terminal.color("red");
-            Terminal.write("[ERROR] ");
+            print("[ERROR] Failed to open log file: " + path);
             Terminal.reset();
-            print("tryp-logger: Failed to open log file: " + filePath);
+        }
+    }
+    
+    fn enableJson(enable) {
+        this.jsonMode = enable;
+    }
+
+    fn _write(levelNum, levelName, color, msg) {
+        if (levelNum < this.minLevel) return false;
+        
+        let t = Time.format(Time.now(), "%Y-%m-%d %H:%M:%S");
+        let outStr = "";
+        
+        if (this.jsonMode) {
+            let logObj = {
+                "time": t,
+                "level": levelName,
+                "module": this.name,
+                "message": msg
+            };
+            outStr = Json.stringify(logObj);
+            print(outStr);
+        } else {
+            outStr = "[" + t + "] [" + levelName + "] [" + this.name + "] " + msg;
+            
+            Terminal.color("gray");
+            Terminal.write("[" + t + "] ");
+            Terminal.color(color);
+            Terminal.write("[" + levelName + "] ");
+            Terminal.color("magenta");
+            Terminal.write("[" + this.name + "] ");
+            Terminal.reset();
+            print(msg);
+        }
+
+        if (this.fileHandle != false) {
+            this.fileHandle.write(outStr + "\n");
         }
     }
 
-    // Internal write function
-    static fn _write(level, color, msg) {
-        let t = Time.format(Time.now(), "%Y-%m-%d %H:%M:%S");
-        let fileFormatted = "[" + t + "] [" + level + "] " + msg;
-        
-        // Write to terminal
-        Terminal.color("gray");
-        Terminal.write("[" + t + "] ");
-        Terminal.color(color);
-        Terminal.write("[" + level + "] ");
-        Terminal.reset();
-        print(msg);
-        
-        // Write to file if enabled
-        if (__tryp_logger_file != false) {
-            __tryp_logger_file.write(fileFormatted + "\n");
-        }
-    }
+    fn debug(msg) { this._write(LogLevel["DEBUG"], "DEBUG", "cyan", msg); }
+    fn info(msg)  { this._write(LogLevel["INFO"], "INFO", "green", msg); }
+    fn warn(msg)  { this._write(LogLevel["WARN"], "WARN", "yellow", msg); }
+    fn error(msg) { this._write(LogLevel["ERROR"], "ERROR", "red", msg); }
     
-    // Log levels
-    static fn info(msg) { Logger._write("INFO", "green", msg); }
-    static fn warn(msg) { Logger._write("WARN", "yellow", msg); }
-    static fn error(msg) { Logger._write("ERROR", "red", msg); }
-    static fn debug(msg) { Logger._write("DEBUG", "cyan", msg); }
-    
-    // Close the log file when done
-    static fn close() {
-        if (__tryp_logger_file != false) {
-            __tryp_logger_file.close();
-            __tryp_logger_file = false;
+    fn close() {
+        if (this.fileHandle != false) {
+            this.fileHandle.close();
+            this.fileHandle = false;
         }
     }
 }

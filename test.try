@@ -1,10 +1,25 @@
 load "main.try";
 
-Logger.info("Starting application...");
-Logger.debug("Found 42 records in database.");
-Logger.warn("Memory usage is getting high!");
-Logger.error("Failed to connect to database!");
+// Create instances for different modules
+let authLog = Logger("Auth");
+let dbLog = Logger("Database");
 
-Logger.setFile("app.log");
-Logger.info("This should go to file as well as terminal.");
-Logger.close();
+// Configure database logger
+dbLog.setFile("app.log");
+dbLog.setLevel(LogLevel["WARN"]); // Only show WARN and ERROR
+
+// Auth logs
+authLog.info("User 'admin' logged in.");
+authLog.debug("Token generated: 12345"); // Debug is shown by default
+
+// DB logs
+dbLog.info("Connected to database."); // This won't be shown because level > INFO
+dbLog.warn("Query took 500ms!");
+dbLog.error("Connection lost.");
+
+// JSON Mode test
+let apiLog = Logger("API");
+apiLog.enableJson(true);
+apiLog.info("Request received: GET /users");
+
+dbLog.close();
