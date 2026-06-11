@@ -1,0 +1,10 @@
+load "main.try";
+
+Logger.info("Starting application...");
+Logger.debug("Found 42 records in database.");
+Logger.warn("Memory usage is getting high!");
+Logger.error("Failed to connect to database!");
+
+Logger.setFile("app.log");
+Logger.info("This should go to file as well as terminal.");
+Logger.close();
