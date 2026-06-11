@@ -1,52 +1,5 @@
 // tryp-logger: A professional logging library for Trypillia
 // Version: 1.0.0
+// Entry point
 
-let __tryp_logger_file = false;
-
-class Logger {
-    // Set a file path to log messages to a file
-    static fn setFile(filePath) {
-        let f = File.open(filePath, "a");
-        if (f.isOk) {
-            __tryp_logger_file = f.value;
-        } else {
-            Terminal.color("red");
-            Terminal.write("[ERROR] ");
-            Terminal.reset();
-            print("tryp-logger: Failed to open log file: " + filePath);
-        }
-    }
-
-    // Internal write function
-    static fn _write(level, color, msg) {
-        let t = Time.format(Time.now(), "%Y-%m-%d %H:%M:%S");
-        let fileFormatted = "[" + t + "] [" + level + "] " + msg;
-        
-        // Write to terminal
-        Terminal.color("gray");
-        Terminal.write("[" + t + "] ");
-        Terminal.color(color);
-        Terminal.write("[" + level + "] ");
-        Terminal.reset();
-        print(msg);
-        
-        // Write to file if enabled
-        if (__tryp_logger_file != false) {
-            __tryp_logger_file.write(fileFormatted + "\n");
-        }
-    }
-    
-    // Log levels
-    static fn info(msg) { Logger._write("INFO", "green", msg); }
-    static fn warn(msg) { Logger._write("WARN", "yellow", msg); }
-    static fn error(msg) { Logger._write("ERROR", "red", msg); }
-    static fn debug(msg) { Logger._write("DEBUG", "cyan", msg); }
-    
-    // Close the log file when done
-    static fn close() {
-        if (__tryp_logger_file != false) {
-            __tryp_logger_file.close();
-            __tryp_logger_file = false;
-        }
-    }
-}
+load "src/Logger.try";
