@@ -1,4 +1,6 @@
 load "main.try";
+use TrypLogger.Logger;
+use TrypLogger.LogLevel;
 
 // Create instances for different modules
 let authLog = Logger("Auth");

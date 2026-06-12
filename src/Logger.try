@@ -1,5 +1,6 @@
 // tryp-logger/src/Logger.try
 
+namespace TrypLogger;
 let LogLevel = {
     "DEBUG": 0,
     "INFO": 1,
