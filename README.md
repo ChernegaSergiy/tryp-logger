@@ -20,7 +20,7 @@ tryppm install github:ChernegaSergiy/tryp-logger
 ## Usage
 
 ```javascript
-load "tryp_modules/tryp-logger.try";
+load "tryp_modules/autoload.try";
 
 // Initialize loggers
 let authLog = Logger("Auth");
